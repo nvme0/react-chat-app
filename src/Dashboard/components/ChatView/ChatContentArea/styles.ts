@@ -9,6 +9,18 @@ const useStyles = makeStyles({
     paddingRight: theme.spacing(4),
     paddingBottom: theme.spacing(2)
   },
+  senderText: {
+    fontWeight: "bold",
+    paddingRight: theme.spacing(1)
+  },
+  flexColumn: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  flexJustifyContentSpaceBetween: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
   userSent: {
     float: "right",
     clear: "both",
