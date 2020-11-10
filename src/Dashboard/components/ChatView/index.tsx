@@ -38,8 +38,8 @@ const ChatView = ({ userEmail, chat }: Props) => {
     }
   }, [chat.messages]);
 
-  const handleOnSubmitMessage = (message: string) => {
-    if (textHasContent(message)) {
+  const handleOnSubmitMessage = (content: string, contentType?: string) => {
+    if (textHasContent(content)) {
       firebase
         .firestore()
         .collection("chats")
@@ -47,12 +47,43 @@ const ChatView = ({ userEmail, chat }: Props) => {
         .update({
           messages: firebase.firestore.FieldValue.arrayUnion({
             sender: userEmail,
-            message,
+            content,
+            contentType,
             timestamp: Date.now()
           }),
           receiverHasRead: false
         });
     }
+  };
+
+  const handleOnUploadFileProgress = (
+    snapshot: firebase.storage.UploadTaskSnapshot
+  ) => {
+    const percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log({ percentage });
+  };
+
+  const handleOnUploadFileError = (
+    error: firebase.storage.FirebaseStorageError
+  ) => {};
+
+  const handleOnUploadFiles = (files: File[]) => {
+    files.forEach((file) => {
+      const storagePath = `users/${userEmail}/${file.name}`;
+      const storageRef = firebase.storage().ref(storagePath);
+      const task = storageRef.put(file);
+      task.on(
+        "state_changed",
+        handleOnUploadFileProgress,
+        handleOnUploadFileError,
+        () => {}
+      );
+      task.then((snapshot) => {
+        snapshot.ref.getDownloadURL().then((downloadUrl) => {
+          handleOnSubmitMessage(downloadUrl, file.type);
+        });
+      });
+    });
   };
 
   return (
@@ -63,7 +94,10 @@ const ChatView = ({ userEmail, chat }: Props) => {
         chat={chat}
         contentRef={contentRef}
       />
-      <ChatTextBox onSubmitMessage={handleOnSubmitMessage} />
+      <ChatTextBox
+        onSubmitMessage={handleOnSubmitMessage}
+        onUploadFiles={handleOnUploadFiles}
+      />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Chat } from "../../../../datastoreTypes";
+import ChatMessage from "./ChatMessage";
 import useStyles from "./styles";
 
 export interface Props {
@@ -21,7 +22,7 @@ const ChatContentArea = ({ userEmail, chat, contentRef }: Props) => {
             message.sender === userEmail ? classes.userSent : classes.friendSent
           }
         >
-          {message.message}
+          <ChatMessage {...message} />
         </div>
       ))}
     </main>

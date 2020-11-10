@@ -64,7 +64,7 @@ const ChatList = ({
                     noWrap
                   >
                     {messages.length
-                      ? messages[messages.length - 1].message
+                      ? messages[messages.length - 1].content
                       : ""}
                   </Typography>
                 </span>

@@ -15,6 +15,10 @@ firebase.initializeApp({
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 });
 
+firebase.firestore().settings({
+  ignoreUndefinedProperties: true
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
